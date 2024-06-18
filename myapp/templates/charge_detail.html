@@ -1,0 +1,66 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Charge Detail</title>
+    <style>
+        .qrcode-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .pix-key-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .copy-button {
+            margin-top: 10px;
+            padding: 5px 10px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Charge Detail</h1>
+    <p>Description: {{ charge.description }}</p>
+    <p>Value: R$ {{ charge.value }}</p>
+    <p>Expire At: {{ charge.boleto.expire_at }}</p>
+    <p>Status: {{ charge.boleto.status }}</p>
+    <a href="{{ charge.boleto.pdf }}">Download Boleto</a>
+
+    <div class="qrcode-container">
+        <h2>QR Code</h2>
+        {% if charge.boleto.qrcode %}
+            <img src="{{ charge.boleto.qrcode }}" alt="QR Code">
+        {% else %}
+            <p>No QR Code available.</p>
+        {% endif %}
+    </div>
+
+    <div class="pix-key-container">
+        <h2>Pix Key</h2>
+        {% if charge.boleto.pix_key %}
+            <p id="pix-key">{{ charge.boleto.pix_key }}</p>
+            <button class="copy-button" onclick="copyToClipboard()">Copy Pix Key</button>
+        {% else %}
+            <p>No Pix Key available.</p>
+        {% endif %}
+    </div>
+
+    <script>
+        function copyToClipboard() {
+            const pixKeyElement = document.getElementById('pix-key');
+            const textArea = document.createElement('textarea');
+            textArea.value = pixKeyElement.textContent;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            alert('Pix Key copied to clipboard');
+        }
+    </script>
+</body>
+</html>
